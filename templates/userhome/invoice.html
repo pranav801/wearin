@@ -1,0 +1,161 @@
+{% extends 'userhome/base.html' %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Order tracking{% endblock %}
+
+{% block links %}
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'css/new-invoice.css' %}">
+
+
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container" >
+   <div class="col-md-12">
+      <div class="invoice" id="printable-section" >
+         <!-- begin invoice-company -->
+         <div class="invoice-company text-inverse f-w-600">
+            <span class="pull-right hidden-print">
+            {% comment %} <a href="javascript:;" class="btn btn-sm btn-white m-b-10 p-l-5"><i class="fa fa-file t-plus-1 text-danger fa-fw fa-lg"></i> Export as PDF</a> {% endcomment %}
+            <a id="print-button" onclick="print()" class="btn btn-sm btn-white m-b-10 p-l-5" ><i class="fa fa-print t-plus-1 fa-fw fa-lg"></i> Print</a>
+            </span>
+            <img src="{% static 'media/imagess/wear in logo home.png' %}" width="70px">
+ 
+         </div>
+         <!-- end invoice-company -->
+         <!-- begin invoice-header -->
+         <div class="invoice-header">
+            <div class="invoice-from"> 
+               <small>From</small>
+               <address class="m-t-5 m-b-5">
+                  <strong class="text-inverse">WeariN, Inc.</strong><br>
+                  Phoenix Business Park,<br>
+                  Marathahalli, Bengaluru 560037<br>
+                  Phone: (904) 854-3167<br>
+                  Email: wearin.indiapvtltd@gmail.com
+               </address>
+            </div>
+            <div class="invoice-to">
+               <small>To</small>
+               <address class="m-t-5 m-b-5">
+                  <strong class="text-inverse">{{order.user.name}}</strong><br>
+                  {{order.delivery_address.house_name}}, {{order.delivery_address.city}}<br>
+                  {{order.delivery_address.district}}, {{order.delivery_address.state}}, {{order.delivery_address.pincode}}<br>
+                  Phone: {{order.user.phone_number}}<br>
+                  Email: {{order.user.email}}
+               </address>
+            </div>
+            <div class="invoice-date">
+               <small>Invoice / April period</small>
+               <div class="date text-inverse m-t-5">{{order.ordered_date}}</div>
+               <div class="invoice-detail">
+                  {{order.order_id}}<br>
+                  {{order.payment.payment_method.method}}
+               </div>
+            </div>
+         </div>
+         <!-- end invoice-header -->
+         <!-- begin invoice-content -->
+         <div class="invoice-content">
+            <!-- begin table-responsive -->
+            <div class="pb-5">
+               <div class="table-responsive">
+                  <table class="table table-invoice">
+                     <thead>
+                        <tr>
+                           <th>PRODUCT</th>
+                           <th class="text-center" width="10%">RATE</th>
+                           <th class="text-center" width="10%">QUANTITY</th>
+                           <th class="text-right" width="20%"> TOTAL</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                           <td>
+                              <span class="text-inverse">{{item.product}},&nbsp;&nbsp;&nbsp;  ( {{item.variation.color.color}} )</span><br>
+                           </td>
+                           <td class="text-center">₹{{item.item_price}}</td>
+                           <td class="text-center">{{item.quantity}}</td>
+                           <td class="text-right">₹{{item.item_total}}</td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+            
+            <!-- end table-responsive -->
+            <!-- begin invoice-price -->
+            <div class="pt-5">
+               <div class="invoice-price ">
+                  <div class="invoice-price-left">
+                     <div class="invoice-price-row">
+                        <div class="sub-price">
+                           
+                           <small>SUBTOTAL</small>
+                           <span class="text-inverse">₹{{order.payment.sub_total}}</span>
+                           
+                        </div>
+                        <div class="sub-price">
+                           <i class="fa fa-plus text-muted"></i>
+                        </div>
+                        <div class="sub-price">
+                           <small>TAX FEE (2.5%)</small>
+                           <span class="text-inverse">₹{{order.payment.tax}}</span>
+                        </div>
+                        {% if order.coupon %}
+                        <div class="sub-price">
+                           <i class="fa fa-minus text-muted"></i>
+                        </div>
+                        <div class="sub-price">
+                           <small>COUPON </small>
+                           <span class="text-inverse">₹{{order.coupon.discount_price}}</span>
+                        </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="invoice-price-right">
+                     <small>TOTAL</small> <span class="f-w-600">₹{{order.payment.grand_total}}</span>
+                  </div>
+               </div>
+            </div>
+            
+            <!-- end invoice-price -->
+         </div>
+         <!-- end invoice-content -->
+         <!-- begin invoice-note -->
+         <div class="invoice-note">
+            * Make all cheques payable to [WeariN]<br>
+            * Payment is due within 30 days<br>
+            * If you have any questions concerning this invoice, contact  [ Pranav,&nbsp; 9048543167,&nbsp; pranavtv0403@gmail.com ]
+         </div>
+         <!-- end invoice-note -->
+         <!-- begin invoice-footer -->
+         <div class="invoice-footer">
+            <p class="text-center m-b-5 f-w-600">
+               THANK YOU FOR YOUR BUSINESS
+            </p>
+            <p class="text-center">
+               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-globe"></i> wearin.store</span> &nbsp;&nbsp;&nbsp;
+               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-phone-volume"></i> T:904-8543167</span>&nbsp;&nbsp;&nbsp;
+               <span class="m-r-10"><i class="fa fa-fw fa-lg fa-envelope"></i> wearin.indiapvtltd@gmail.com</span>
+            </p>
+         </div>
+         <!-- end invoice-footer -->
+      </div>
+      
+   </div>
+</div>
+
+
+
+
+{% endblock %}

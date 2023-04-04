@@ -1,0 +1,87 @@
+{% extends 'userhome/base.html' %}
+{% load static %}
+
+{% block title %}WeariN | Wishlist{% endblock title %}
+
+{% block content %}
+
+<div class="site-wrap">
+
+  <div class="bg-light py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-0"><a href="{% url 'allProducts' %}">Home</a> <span class="mx-2 mb-0">/</span> <strong
+            class="text-black">Wishlist</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-section text-center">
+    {% if wishlist_items %}
+
+    <div class="container">
+      <div class="row mb-5 ">
+
+        <form class="col-md-12" method="post">
+          <div class="site-blocks-table">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="product-thumbnail">Image</th>
+                  <th class="product-name">Product</th>
+                  <th class="product-price">Price</th>
+                  <th class="product-remove">Remove</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for wishlist_item in wishlist_items %}
+                <tr>
+                  <td class="product-thumbnail">
+                    <img src="{{wishlist_item.product.images.url}}" alt="Image" class="img-fluid">
+                  </td>
+                  <td class="product-name">
+                    <a class="h5 text-black" href="{{wishlist_item.product.get_url}}">
+                      <h5>{{wishlist_item.product.product_name}}</h5>
+                    </a>
+                  </td>
+                  <td>₹ {{wishlist_item.product.price}}</td>
+                  <td><a href="{% url 'remove_wishlistitem' wishlist_item.product.id %}"
+                      class="btn btn-primary btn-sm">X</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              
+            </table>
+          </div>
+        </form>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row mb-5">
+            <div class="col-md-6">
+              <a href="{% url 'allProducts' %}" class="btn btn-outline-primary btn-sm btn-block">Continue Shopping</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {% else %}
+    <img class="w-25" src="{% static 'media/imagess/empty-wishlist.png' %}" alt="" style="align-items: center;">
+    <div class="col-md-2 mx-auto pt-4">
+      <a href="{% url 'allProducts' %}" class="btn btn-outline-primary btn-sm btn-block">Continue Shopping</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,270 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}Product management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+
+        <div class="card-body">
+            <h5 class="card-title">Product</h5>
+
+            
+
+            {% include 'alerts.html' %}
+
+            <table class="table table-borderless datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">delete</th>
+                        <th scope="col">edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+
+                    <tr>
+                        <th scope="row">{{ p.id }}</th>
+                        <td>
+                            <div style="width: 70px;" class="overflow-hidden">
+                                <img class="w-100" src="{{p.images.url}}" alt="">
+                            </div>
+                        </td>
+                        <td>{{p.product_name}}</td>
+                        <td>{{p.category}}</td>
+                        <td>{{p.brand}}</td>
+
+                        <td>{{p.price}}</td>
+
+
+
+
+                        <td><button type="button" class="btn btn-outline-danger px-3" data-bs-toggle="modal"
+                                data-bs-target="#delete{{ forloop.counter }}">
+                                Delete
+                            </button></td>
+                        {% comment %} <td><i class="bi bi-edit"></i></td> {% endcomment %}
+
+
+                        <div class="modal fade" id="delete{{ forloop.counter }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{p.product_name}}
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <a href="{% url 'delete_product' p.id %}"> <button type="button"
+                                                class="btn btn-primary">Confirm</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <td><button type="button" class="btn btn-outline-info px-3" data-bs-toggle="modal"
+                                data-bs-target="#edit_modal-{{ forloop.counter }}">
+                                Edit
+                            </button></td>
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="edit_modal-{{forloop.counter}}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">
+                                            Edit Product</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'update_product' p.id %}" enctype="multipart/form-data"
+                                            method="POST" class="row g-2">
+                                            {% csrf_token %}
+                                            <div class="form-outline mb-3">
+                                                <input required name="product" value="{{p.product_name}}" type="text"
+                                                    id="form3Example1cg" class="form-control form-control-lg" />
+                                                <label class="form-label" for="form3Example1cg">Product</label>
+                                            </div>
+
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        name="category" required>
+
+                                                        <option value="{{p.category.cat_name}}" selected>
+                                                            {{p.category.cat_name}}</option>
+                                                        {% for c in categories %}
+                                                        <option value="{{c.cat_name}}">{{c.cat_name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                </br>
+                                                <div class="col-md-6">
+                                                    <select class="form-select" aria-label="Default select example"
+                                                        name="brand" required>
+
+                                                        <option value="{{p.brand.brand_name}}" selected>
+                                                            {{p.brand.brand_name}}</option>
+                                                        {% for b in brands %}
+                                                        <option value="{{b.brand_name}}">{{b.brand_name}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                </br>
+                                            </div> 
+
+
+                                            <div class="form-outline mb-3">
+                                                <input name="description" value="{{ p.product_des }}" type="text"
+                                                    id="form3Example3cg" class="form-control form-control-lg" />
+                                                <label class="form-label" for="form3Example3cg">product description</label>
+                                            </div>
+                                            <div class="form-outline mb-3">
+                                                <input name="price" value="{{ p.price }}" type="number"
+                                                    id="form3Example3cg" class="form-control form-control-lg" />
+                                                <label class="form-label" for="form3Example3cg">Price</label>
+                                            </div>
+
+
+                                            <div class="form-outline mb-3">
+                                                <input name="image" value="{{p.images}}" type="file"
+                                                    id="form3Example1cg" class="form-control form-control-lg" />
+                                                <label class="form-label" for="form3Example1cg">image</label>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-success">Update</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+
+        </div>
+
+    </div>
+    <div class="btn btn-secondary  w-100" data-bs-toggle="modal" data-bs-target="#addproduct_modal-{{forloop.counter}}">
+        Add product
+    </div>
+</div><!-- End table -->
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addproduct_modal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">Add product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+
+            <div class="modal-body">
+                <form action="{% url 'add_product' %}" enctype="multipart/form-data" method="POST" class="row g-2">
+                    {% csrf_token %}
+
+                    <div class="form-outline mb-3">
+                        <input required name="product" type="text" id="form3Example1cg"
+                            class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example1cg">Product</label>
+                    </div>
+
+                    <div class="row mb-4">
+
+                        <div class="form-outline mb-6 col-md-6">
+                            <label class="form-label" for="form3Example3cg">Category</label>
+                            <select name="category" id="category">
+                                {% for c in categories %}
+                                <option value="{{ c.id }}">
+                                    {{ c.cat_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-outline mb-6 col-md-6">
+                            <label class="form-label" for="form3Example3cg">Brand</label>
+                            <select name="brand" id="brand">
+                                {% for b in brands %}
+                                <option value="{{ b.id }}">
+                                    {{ b.brand_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-outline mb-3">
+                        <input name="price" type="number" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Price</label>
+                    </div>
+
+                    <div class="form-outline mb-3">
+                        <input name="description" type="text" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">product description</label>
+                    </div>
+
+
+                    <div class="form-outline mb-3">
+                        <input name="image" type="file" id="form3Example1cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example1cg">Thumbnail image</label>
+                    </div>
+
+                    <div class="form-outline mb-3">
+                        <input name="imagess" type="file" id="form3Example1cg" class="form-control form-control-lg"
+                            multiple />
+                        <label class="form-label" for="form3Example1cg">Multiple images</label>
+                    </div>
+
+
+
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-outline-dark btn-lg ">Save</button>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

@@ -1,0 +1,123 @@
+{% extends 'userhome/base.html' %}
+{% load static %}
+{% block title %}Order details{% endblock %}
+
+
+{% block link %}
+
+<link rel="stylesheet" href="https://allyoucan.cloud/cdn/icofont/1.0.1/icofont.css"
+    integrity="sha384-jbCTJB16Q17718YM9U22iJkhuGbS0Gd2LjaWb4YJEZToOPmnKDjySVa323U+W7Fv" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'css/order-detail.css'%}">
+
+{% endblock %}
+
+
+
+
+{% block content %}
+
+<div class="container m-t-120 mb-5">
+
+    <div class="row mt-3 justify-content-center">
+        <div class="col-md-12">
+            <div class="osahan-account-page-right shadow-sm p-4 h-100">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane  fade  active show" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+
+                        <nav aria-label="breadcrumb mb-0" class=" rounded-3 p-2 mb-3"
+                            style="background-color: #7971ea;">
+
+                            <h3 class="text-center text-light">Ordered Items</h3>
+                        </nav>
+
+                        {% for item in order_items %}
+                        <div class="bg-white card mb-2 order-list shadow-sm">
+                            <div class="gold-members p-4">
+
+                                <div class="media">
+
+                                    <img style="width: 70px;" class="mr-4" src="{{item.product.images.url}}"
+                                        alt="Generic placeholder image">
+
+                                    <div class="media-body">
+                                        <a href="#">
+                                            <span class="float-right text-info">{{item.order_status}} <i
+                                                    class="icofont-check-circled text-success"></i></span>
+                                        </a>
+                                        <h6 class="mb-2">
+                                            <p class="text-tertiary">Product: <a>{{item.product.product_name }}</a></p>
+
+                                            <p class="text-secondary mb-1 mt-1"><i class="icofont-list"></i>(
+                                                {{item.variation.color.color}} )
+                                            </p>
+
+
+                                        </h6>
+
+                                        <p class="text-gray mb-3"><i class="icofont-list"></i> Price:
+                                            ₹{{item.item_price}}.00 <i class="icofont-clock-time ml-2"><br>
+                                            </i> Quantity: {{ item.quantity }}
+                                        </p>
+
+                                        <hr>
+                                        <div class="float-right">
+                                            <a class="btn btn-sm btn-outline-primary rounded-pill py-2"
+                                                href="{% url 'tracking' item.id %}">Track Order</a>
+
+                                            {% if item.order_status == 'Cancelled' or item.order_status == 'Refunded' %}
+                                            <a class=" text-danger rounded-pill py-2">Order Cancelled</a>
+                                            {% else %}
+                                            <button type="button" class="btn  rounded-pill py-2" data-toggle="modal"
+                                                data-target="#cancelOrder-{{forloop.counter}}">Cancel Order</button>
+                                            {% endif %}
+                                        </div>
+                                        <p class="mb-0 text-black text-danger pt-2"><span
+                                                class="text-black font-weight-bold"> Total Paid:</span> ₹{{item.order.payment.grand_total }}.00
+                                        </p>
+                                    </div>
+
+
+                                    <div class="modal fade" id="cancelOrder-{{forloop.counter}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h2 class="modal-title fs-5" id="exampleModalLabel">
+                                                        Cancel order
+                                                    </h2>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h5>
+                                                        Are you sure you want to cancel the order?
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{% url 'cancel_order' item.id item.order.order_id %}">
+                                                        <button type="submit" class="btn btn-danger">Confirm</button>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+
+
+
+{% endblock %}

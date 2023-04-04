@@ -1,0 +1,95 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}Review management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+
+        <div class="card-body">
+            <h5 class="card-title">Review</h5>
+
+            {% include 'alerts.html' %}
+            
+            <table class="table table-borderless datatable">
+                <thead>
+                    
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Product name</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Review</th>                      
+                        <th scope="col">Rating</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reviews %}
+
+                    <tr>
+                        <th scope="row">{{ r.id }}</th>
+                        <th scope="row">
+                            <img src="/media/{{r.product.images}}" style="width:70px;" alt=..>
+                        </th>
+                        <td>{{r.product}}</td>
+                        <td>{{r.user.name}}</td>
+                        <td>{{r.subject}}</td>
+                        <td>{{r.review}}</td>
+                        <td>{{r.rating}}/5.0</td>
+
+
+
+
+                        <td><button type="button" class="btn btn-outline-danger px-3" data-bs-toggle="modal"
+                                data-bs-target="#delete{{ forloop.counter }}">
+                                Delete
+                            </button></td>
+                        {% comment %} <td><i class="bi bi-edit"></i></td> {% endcomment %}
+
+
+                        <div class="modal fade" id="delete{{ forloop.counter }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{r.product}}
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <a href="{% url 'remove_review' r.id %}"> <button type="button"
+                                                class="btn btn-primary">Confirm</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+   
+                    </tr>
+
+                    {% endfor %}
+                    
+                </tbody>
+            </table>
+
+
+        </div>
+        
+    </div>
+
+
+</div>
+    
+    
+    
+    
+
+{% endblock body %}

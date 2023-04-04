@@ -1,0 +1,136 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}Brand management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+
+        <div class="card-body">
+            <h5 class="card-title">Brands</h5>
+            {% include 'alerts.html' %}
+            <table class="table table-borderless datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Brand name</th>
+                        <th scope="col">delete</th>
+                        <th scope="col">edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in brands %}
+
+                    <tr>
+                        <th scope="row">{{ b.id }}</th>
+                        <td>{{b.brand_name}}</td>
+                        <td><button type="button" class="btn btn-outline-danger px-3" data-bs-toggle="modal"
+                                data-bs-target="#delete{{ forloop.counter }}">
+                                Delete
+                            </button>
+                        </td>
+                        <div class="modal fade" id="delete{{ forloop.counter }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{b.brand_name}}
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <a href="{% url 'delete_brand' b.id %}"> <button type="button" class="btn btn-primary">Confirm</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <td>
+                            <button type="button" class="btn btn-outline-info px-3" data-bs-toggle="modal"
+                                data-bs-target="#edit_modal-{{ forloop.counter }}">
+                                Edit
+                            </button>
+                        </td>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="edit_modal-{{forloop.counter}}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">
+                                            Edit User</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'update_brand' b.id %}" enctype="multipart/form-data"
+                                            method="POST" class="row g-2">
+                                            {% csrf_token %}
+                                            <div class="form-outline mb-3">
+                                                <input required name="brand" value="{{b.brand_name}}" type="text" id="form3Example1cg" class="form-control form-control-lg" />
+                                                <label class="form-label" for="form3Example1cg">Brand name</label>
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Update</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+    <div class="btn btn-secondary  w-100" data-bs-toggle="modal" data-bs-target="#addbrand_modal-{{forloop.counter}}">
+        Add Brand
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addbrand_modal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">Add Brand</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'add_brand' %}" enctype="multipart/form-data" method="POST" class="row g-2">
+                    {% csrf_token %}
+
+                    <div class="form-outline mb-3">
+                        <input required name="brand" type="text" id="form3Example1cg"
+                            class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example1cg">Brand name</label>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-outline-dark btn-lg ">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

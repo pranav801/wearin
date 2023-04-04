@@ -1,0 +1,129 @@
+{% extends 'userhome/base.html' %}
+
+{% block title %}
+Add new address
+{% endblock title %}
+
+
+
+{% block content %}
+
+<section style="background-color: #eee;">
+    <div class="container py-5"> 
+
+      <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                  <div class="card-body text-center">
+                    <div class="text-center container rounded mx-auto overflow-hidden" style="width: 150px; height: 150px;">
+                        {% if request.user.user_image %}
+                        <img class="w-100 border rounded-circle" src="{{request.user.user_image.url}}" alt="avatar"
+                        class="rounded-circle img-fluid" style="width: 150px;">
+                          {% else %}
+                          <img class="w-100" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                          class="rounded-circle img-fluid" style="width: 150px;">
+                          {% endif %}
+                       </div>
+                       <a  data-bs-toggle="modal" data-bs-target="#changedp">
+                        <button class="btn btn-primary w-25 btn-hover" style="font-size: 10px;">Change</button>
+                      </a>
+                  </div>
+                </div> 
+                
+              </div> 
+            <!--Edit Modal -->
+            <div class="modal fade" id="changedp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="" id="exampleModalLabel">User Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{% url 'change_dp' %}" enctype="multipart/form-data" method="POST">
+                      {% csrf_token %}
+      
+                      <div class="form-outline mb-4">
+                        <input name='user_image'   type="file" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">User Image</label>
+                      </div>
+      
+                      <div class="d-flex justify-content-center">
+                        <button type="submit"
+                          class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Save Changes</button>
+                      </div>
+      
+                    </form>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="col-lg-8">
+            {% include 'alerts.html' %}
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <form action="{% url 'add_address' 0 %}?num={{num}}" method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-group">
+                      <label for="{{ form.name.id_for_label }}">Name:</label>
+                      {{ form.name }}
+                      {{ form.name.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.phone_number.id_for_label }}">Phone Number:</label>
+                      {{ form.phone_number }}
+                      {{ form.phone_number.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.house_name.id_for_label }}">House name:</label>
+                      {{ form.house_name }}
+                      {{ form.house_name.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.landmark.id_for_label }}">landmark:</label>
+                      {{ form.landmark }}
+                      {{ form.landmark.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.city.id_for_label }}">City:</label>
+                      {{ form.city }}
+                      {{ form.city.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.pincode.id_for_label }}">Pincode:</label>
+                      {{ form.pincode }}
+                      {{ form.pincode.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.district.id_for_label }}">District:</label>
+                      {{ form.district }}
+                      {{ form.district.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.state.id_for_label }}">State:</label>
+                      {{ form.state }}
+                      {{ form.state.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.country.id_for_label }}">Country:</label>
+                      {{ form.country }}
+                      {{ form.country.errors }}
+                    </div>
+                    <!-- Add similar code for other fields -->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
+
+
+

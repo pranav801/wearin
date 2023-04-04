@@ -1,0 +1,47 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}Order management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+
+        <div class="card-body">
+            <h5 class="card-title">Orders</h5>
+            {% include 'alerts.html' %}
+            <table class="table table-borderless datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Grand Total</th>
+                        <th scope="col"> view</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <th scope="row">{{o.order_id}}</th>
+                        <td>{{o.ordered_date}}</td>
+                        <td>{{o.user.email}}</td>
+                        <td>{{o.payment.payment_method}}</td>
+                        <td class="text-center">₹{{o.payment.grand_total}}</td>
+                        <td>
+                            <a href="{% url 'order_items' o.id %}" type="button" class="btn"><i
+                                    class="fa-solid fa-eye fa-lg text-warning"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div><!-- End table -->
+
+
+
+{% endblock body %}

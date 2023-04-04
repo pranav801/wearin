@@ -1,0 +1,112 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}User management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12">
+  <div class="card recent-sales overflow-auto">
+
+    <div class="card-body">
+      <h5 class="card-title">Users</h5>
+      {% include 'alerts.html' %}
+      <table class="table table-borderless datatable">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Name</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Mobile number</th>
+            <th scope="col">Status</th>
+            <th scope="col">Block Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <th scope="row">{{u.id}}</th>
+            <td>{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td>
+              {% if u.phone_number %}
+              {{u.phone_number}}
+              {% else %}
+              <span class="text-danger">not provided</span>
+              {% endif %}
+            </td>
+
+            <td><span class="badge 
+                          {% if u.is_active %} text-dark 
+                          {% else %}
+                          bg-dark px-3
+                          {% endif %}">
+                {% if u.is_active %}Verified
+                {% else %}
+                Not verified
+                {% endif %}
+              </span></td>
+            <td><span class="badge 
+                          {% if not u.is_blocked %}text-dark 
+                          {% else %}
+                          bg-danger px-3
+                          {% endif %}">
+                {% if not u.is_blocked %}Active
+                {% else %}
+                Blocked
+                {% endif %}
+              </span></td>
+            <td>
+              <!-- Button trigger modal -->
+              <a data-bs-toggle="modal" data-bs-target="#confirmDelete{{forloop.counter}}">
+                <button class="btn {% if not u.is_blocked %}btn-danger px-4
+                                    {% else %}
+                                    btn-success px-3
+                                    {% endif %}">
+                  {% if not u.is_blocked %}Block
+                  {% else %}
+                  Unblock
+                  {% endif %}
+                </button>
+              </a>
+
+              <!-- Modal -->
+              <div class="modal fade" id="confirmDelete{{forloop.counter}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2 class="modal-title fs-5" id="exampleModalLabel">
+                        Confirm {% if u.is_blocked %}Unblock {% else %}Block{% endif %}
+                      </h2>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <h5>
+                        {% if u.is_blocked %}Unblock {% else %}Block
+                        {% endif %} user <span class="text-danger">'{{u.username}}'</span>
+                      </h5>
+                    </div>
+                    <div class="modal-footer">
+                      <form action="{% url 'user_action' u.id %}">
+                        <button type="submit" class="btn btn-danger">Confirm</button>
+                      </form>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div><!-- End table -->
+
+
+
+{% endblock body %}

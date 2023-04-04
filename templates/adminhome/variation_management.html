@@ -1,0 +1,335 @@
+{% extends 'adminhome/base.html' %}
+{% load static %}
+{% block title %}Variation management{% endblock title %}
+{% block body %}
+
+<!-- Recent Sales -->
+<div class="col-12 pb-4">
+  <div class="card recent-sales overflow-auto">
+    <div class="card-body">
+      <h5 class="card-title">Variation</h5>
+      {% include 'alerts.html' %}
+      <table class="table table-borderless datatable">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Product</th>
+            <th scope="col">Color</th>
+            <th scope="col">Stock</th>
+            <th scope="col">delete</th>
+            <th scope="col">edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in variations %}
+          <tr>
+            <th scope="row">{{ v.id }}</th>
+            <th scope="row">
+              {{v.product}}
+            </th>
+            <td>{{v.color.color}}</td>
+            <td>{{ v.stock }}</td>
+            <td><button type="button" class="btn btn-outline-danger px-3" data-bs-toggle="modal"
+                data-bs-target="#delete{{ forloop.counter }}">
+                Delete
+              </button></td>
+            <div class="modal fade" id="delete{{ forloop.counter }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirm Delete</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="heading text-dark">Do you want to delete<br>
+                      <b>{{v}}</b> for <b>{{v.product}}</b>?
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="{% url 'remove_variation' v.id %}"> <button type="button"
+                        class="btn btn-primary">Confirm</button></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <td><button type="button" class="btn btn-outline-info px-3" data-bs-toggle="modal"
+                data-bs-target="#edit_modal-{{ forloop.counter }}">
+                Edit
+              </button></td>
+            <!-- Modal -->
+            <div class="modal fade" id="edit_modal-{{forloop.counter}}" tabindex="-1"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">
+                      Edit Variation</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{% url 'edit_variation' v.id %}" enctype="multipart/form-data" method="POST"
+                      class="row g-2">
+                      {% csrf_token %}
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <select class="form-select" name="product" required>
+                            <option value="{{v.product}}" selected>{{v.product}}</option>
+                            {% for p in products %}
+                            <option value="{{p}}">{{p}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row align-items-center mb-4 col-md-12">
+                        <div class="form-outline flex-fill mb-0">
+                          <input type="number" id="form3Example1c" class="form-control" name="stock" value="{{v.stock}}"
+                            required />
+                        </div>
+                      </div>
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <select class="form-select" name="color" required>
+                            <option value="{{v.color}}" selected>{{v.color}}</option>
+                            {% for color in color %}
+                            <option value="{{color}}">{{color}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-success">Update</button>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="btn btn-secondary  w-100 " data-bs-toggle="modal" data-bs-target="#addproduct_modal-{{forloop.counter}}">
+    Add Variation
+  </div>
+</div><!-- End table -->
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addproduct_modal-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title text-dark fs-5" id="exampleModalLabel">Add variation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'add_variation' %}" enctype="multipart/form-data" method="POST" class="row g-2">
+          {% csrf_token %}
+          <div class="d-flex flex-row align-items-center mb-4">
+            <div class="form-outline flex-fill mb-0">
+              <select class="form-select" name="product" required>
+                <option disabled selected>Product</option>
+                {% for p in products %}
+                <option value="{{p}}">{{p}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- stock -->
+          <div class="d-flex flex-row align-items-center mb-4 col-md-12">
+            <div class="form-outline flex-fill mb-0">
+              <input type="number" id="form3Example1c" class="form-control" name="stock" placeholder="Stock" required />
+            </div>
+          </div>
+
+          <div class="d-flex flex-row align-items-center mb-4">
+            <div class="form-outline flex-fill mb-0">
+              <select class="form-select" aria-label="Default select example" name="color" required>
+                <option disabled selected>Color</option>
+                {% for color in color %}
+                <option value="{{color}}">{{color}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-outline-dark btn-lg ">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<!-- ======================= color ===============================-->
+<div class="col-12">
+  <div class="card recent-sales overflow-auto">
+
+    <div class="card-body">
+      <h5 class="card-title">color</h5>
+
+      {% include 'alerts.html' %}
+
+      <table class="table table-borderless datatable">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">color</th>
+            <th scope="col" style="width:110px">Edit</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in color %}
+          <tr>
+            <th scope="row">{{c.id}}</th>
+            <th scope="row">
+              {{c.color}}
+            </th>
+            <td>
+              <button type="button" class="btn btn-outline-danger px-3" data-bs-toggle="modal"
+                data-bs-target="#deletecolor{{ forloop.counter }}">
+                Delete
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline-info px-3" data-bs-toggle="modal"
+                data-bs-target="#editcolor-{{ forloop.counter }}">
+                Edit
+              </button>
+            </td>
+
+            <!--==========================================-->
+            <!-- Edit color -->
+            <div class="modal fade" id="editcolor-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><b>Edit color</b></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form required action="{% url 'edit_color' c.id %}" class="mx-1 mx-md-4" method="POST">
+                      {% csrf_token %}
+
+                      <!-- Edit color -->
+                      <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                          <input type="text" id="form3Example1c" class="form-control" name="color" value="{{c.color}}"
+                            required />
+                        </div>
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-dark">Apply</button>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end edit  -->
+
+            <!--==========================================-->
+
+            <!-- Delete Modal -->
+
+            <div class="modal fade" id="deletecolor{{forloop.counter}}" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+
+                <!--Content-->
+                <div class="modal-content text-center">
+
+                  <!--Header-->
+                  <div class="modal-header d-flex justify-content-center">
+                    <p class="heading text-dark">Do you want to delete<br>
+                      <b>{{c.color}}</b>?
+                  </div>
+
+                  <!--Body-->
+                  <div class="modal-body">
+                    <i class="fas fa-times fa-4x animated rotateIn text-dark"></i>
+                  </div>
+
+                  <!--Footer-->
+                  <div class="modal-footer flex-center">
+                    <a href="{% url 'remove_color' c.id %}" class="btn  btn-outline-danger">Yes</a>
+                    <button type="button" class="btn btn-danger waves-effect text-light" data-bs-dismiss="modal">No</a>
+                  </div>
+                </div>
+                <!-- Content -->
+
+              </div>
+            </div>
+
+            <!--==========================================-->
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+  <div class="btn btn-secondary  w-100" data-bs-toggle="modal" data-bs-target="#addcolor">
+    Add color
+  </div>
+
+
+  <!--==========================================-->
+  <!-- Add color -->
+  <div class="modal fade" id="addcolor" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-light">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add color</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <form required action="{% url 'add_color' %}" class="mx-1 mx-md-4" method="POST">
+            {% csrf_token %}
+
+            <!-- ADD color -->
+            <div class="d-flex flex-row align-items-center mb-4">
+              <div class="form-outline flex-fill mb-0">
+                <input type="text" id="form3Example1c" class="form-control" name="color" placeholder="Enter color"
+                  required />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-dark">Apply</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- End color  -->
+
+
+
+{% endblock body %}

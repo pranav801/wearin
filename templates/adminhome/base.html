@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}{% endblock title %}</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  {% block links %}
+  {% endblock links %}
+  <!-- Favicons -->
+  <link href="media/imagess/tab-icon01.jpg" rel="icon">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/quill/quill.snow.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/niceadmin.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="{% url 'dashboard' %}" class="logo d-flex align-items-center fw-bold fs-5 ">
+        <img src="{% static 'media/imagess/wear in logo home.png' %}" alt="" style="width: 50px;">
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+
+    <nav class="header-nav ms-auto">
+      <a class="nav-link nav-profile d-flex align-items-center pe-3" href="#" data-bs-toggle="dropdown">
+        <img src="{{request.user.user_image.url}}" alt="Profile" class="rounded-circle">
+        <span class="d-none d-md-block dropdown-toggle ps-2">{{request.user.name}}</span>
+      </a><!-- End Profile Iamge Icon -->
+
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+        <li class="dropdown-header">
+          <a href="{% url 'home' %}">Website</a>
+
+        </li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+
+        <li>
+          <a class="dropdown-item d-flex align-items-center" href="{% url 'admin_profile' %}">
+            <i class="bi bi-person"></i>
+            <span>My Profile</span>
+          </a>
+        </li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li>
+          <a class="dropdown-item d-flex align-items-center" href="{% url 'admin_logout' %}">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Sign Out</span>
+          </a>
+        </li>
+
+      </ul>
+      </li>
+
+      </ul>
+    </nav>
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar pt-5">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'dashboard' %}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'product_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Product</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'variations' %}">
+          <i class="bi bi-grid"></i>
+          <span>Variations</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'category_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Categories</span>
+        </a>
+      </li>
+
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'brand_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Brand</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'user_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Users</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'ad_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Advertisement</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'orders_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Orders </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'coupons' %}">
+          <i class="bi bi-grid"></i>
+          <span>Coupon</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'review_management' %}">
+          <i class="bi bi-grid"></i>
+          <span>Reviews</span>
+        </a>
+      </li>
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    {% block body %}{% endblock body %}
+
+  </main><!-- End #main -->
+
+
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/apexcharts/apexcharts.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/chart.js/chart.umd.js' %}"></script>
+  <script src="{% static 'vendor/echarts/echarts.min.js' %}"></script>
+  <script src="{% static 'vendor/quill/quill.min.js' %}"></script>
+  <script src="{% static 'vendor/simple-datatables/simple-datatables.js' %}"></script>
+  <script src="{% static 'vendor/tinymce/tinymce.min.js' %}"></script>
+  <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/niceadmin.js' %}"></script>
+
+</body>
+
+</html>

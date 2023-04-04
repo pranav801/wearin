@@ -1,0 +1,204 @@
+{% extends 'userhome/base.html' %}
+{% load static %}
+
+{% block title %}Shop{% endblock title %}
+{% block content %}
+
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-0"><a href="{% url 'allProducts' %}">Home</a> <span class="mx-2 mb-0">/</span> <strong
+          class="text-black"></strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+
+    <div class="row mb-5">
+      <div class="col-md-9 order-2">
+
+        <div class="row">
+          <div class="col-md-12 mb-5">
+            <div class="float-md-left mb-4">
+              <h2 class="text-black h5">Shop All</h2>
+            </div>
+            <div class="d-flex">
+              <div class="dropdown mr-1 ml-md-auto">
+
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" id="dropdownMenuReference"
+                  data-toggle="dropdown">Reference</button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+
+                  <a class="dropdown-item" href="?sort_by=name_a_to_z">Name, A to Z</a>
+                  <a class="dropdown-item" href="?sort_by=name_z_to_a">Name, Z to A</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="?sort_by=price_low_to_high">Price, low to high</a>
+                  <a class="dropdown-item" href="?sort_by=price_high_to_low">Price, high to low</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-5">
+          {% for product in products %}
+          <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+            <div class="block-4 text-center border">
+              <figure class="block-4-image">
+                <a href="{{product.get_url}}"><img src="{{product.images.url}}" alt="Image placeholder"
+                    class="img-fluid"></a>
+              </figure>
+              <div class="block-4-text p-4">
+                <h3><a href="{{product.get_url}}">{{product.product_name}}</a></h3>
+                <p class="mb-0">Finding perfect products</p>
+                <p class="text-primary font-weight-bold">₹ {{product.price}}</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="row" data-aos="fade-up">
+          <div class="col-md-12 text-center">
+            <div class="site-block-27">
+              {% if products.has_other_pages %}
+              <ul>
+                {% if products.has_previous %}
+                <li><a href="?page={{products.previous_page_number}}">&lt;</a></li>
+                {% else %}
+                <li class="disabled"><a href="">&lt;</a></li>
+                {% endif %}
+                {% for i in products.paginator.page_range %}
+                {% if products.number == i %}
+                <li class="active"><a href="">{{i}}</a></li>
+                {% else %}
+                <li><a href="?page={{i}}">{{i}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                <li><a href="?page={{products.next_page_number}}">&gt;</a></li>
+                {% else %}
+                <li class="disabled"><a href="">&gt;</a></li>
+                {% endif %}
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <form method="GET" id="filter_form">
+
+        <!-- Category Start -->
+        <div class="border-bottom mb-4 pb-4">
+          <div class="border p-4 rounded mb-4 " style="width: 230px;">
+
+            <h5 class="font-weight-semi-bold mb-4">Category</h5>
+            {% for category in categories %}
+            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+              {% if category.product_set.count %}
+              <input onclick="submit()" type="checkbox" class="custom-control-input" id="{{ category.cat_name }}"
+                name="category" value="{{ category.id }}">
+              <script>
+                var cat_ID = '{{category.id}}';
+
+                var inputElement = document.querySelector('#{{ category.cat_name }}');
+
+                var urlParams = new URLSearchParams(window.location.search);
+                var CatID = urlParams.getAll('category');
+
+                console.log(CatID)
+
+                for (i = 0; i < CatID.length; i++) {
+                  if (CatID[i] === cat_ID) {
+                    inputElement.checked = true;
+                    console.log('checked');
+                  }
+                }
+              </script>
+              {% else %}
+              <input disabled type="checkbox" class="custom-control-input" name="category" value="{{ category.id }}">
+              {% endif %}
+              <label class="custom-control-label" for="{{ category.cat_name }}">{{ category.cat_name }}</label>
+              <span class="badge border font-weight-normal">{{ category.product_count }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Category End -->
+
+          <!-- Brand Start -->
+          <div class="border-bottom mb-4 pb-4">
+
+            <div class="border p-4 rounded mb-4 ">
+
+              <h5 class="mb-4">Brand</h5>
+              {% for brand in brands %}
+              <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                {% if brand.product_set.count %}
+                <input onclick="submit()" type="checkbox" class="custom-control-input" id="{{ brand.brand_name }}"
+                  name="brand" value="{{ brand.id }}" multiple>
+                <script>
+                  var brand_ID = '{{brand.id}}';
+
+                  var inputElement = document.querySelector('#{{ brand.brand_name }}');
+
+                  var urlParams = new URLSearchParams(window.location.search);
+                  var brandId = urlParams.getAll('brand');
+
+                  console.log(brandId)
+
+                  for (i = 0; i < brandId.length; i++) {
+                    if (brandId[i] === brand_ID) {
+                      inputElement.checked = true;
+                      console.log('checked');
+                    }
+                  }
+                </script>
+                {% else %}
+                <input disabled type="checkbox" class="custom-control-input" name="brand" value="{{ brand.brand_id }}">
+                {% endif %}
+
+                <label class="custom-control-label" for="{{ brand.brand_name }}">
+
+                  {{ brand.brand_name }}</label>
+                <span class="badge border font-weight-normal">{{ brand.product_count }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            <!-- Brand End -->
+
+            <div class="border p-4 rounded mb-4">
+              <h5 class="mb-4">Price</h5>
+              <ul class="list-unstyled mb-0">
+
+                <li class="mb-1">
+                  <a href="{% url 'price_sorting'  %}?min=0&max=5000" class="d-flex"><span>₹ 0.00 - ₹5,000</span>
+                  </a>
+                </li>
+                <li class="mb-1">
+                  <a href="{% url 'price_sorting'  %}?min=5000&max=10000" class="d-flex"><span>₹ 5,000 -₹10,000</span> 
+                  </a>
+                </li>
+                <li class="mb-1">
+                  <a href="{% url 'price_sorting'  %}?min=10000&max=20000" class="d-flex"><span>₹ 10,000 - ₹20,000</span></a>
+                </li>
+                <li class="mb-1">
+                  <a href="{% url 'price_sorting'  %}?min=20000&max=50000" class="d-flex"><span>₹ 20,000 - ₹50,000</span> </a>
+                </li>
+                <li class="mb-1">
+                  <a href="{% url 'price_sorting'  %}?min=50000&max=5000000" class="d-flex"><span>₹50,000 & above</span> </a>
+                </li>
+
+              </ul>
+            </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
