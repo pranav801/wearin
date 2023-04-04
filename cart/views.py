@@ -162,7 +162,7 @@ def checkout(request, total=0,quantity=0,cart_items=None):
         return redirect(checkout)
 
     try:
-        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+        client = razorpay.Client(auth=(settings.API_KEY, settings.RAZORPAY_SECRET_KEY))
         payment = client.order.create({'amount': int(cart.get_grand_total()) * 100, 'currency': 'INR', 'payment_capture': 1})
         cart.razorpay_order_id=payment['id']
         cart.save()
