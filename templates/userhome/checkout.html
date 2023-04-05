@@ -258,7 +258,7 @@
                   <tr>
                     <td>{{ cart_item.product.product_name }} ( {{cart_item.variant}} )<strong class="mx-2">x</strong> {{ cart_item.quantity }}
                     </td>
-                    <td> &nbsp&nbsp {{ cart_item.product.price }}</td>
+                    <td> &nbsp&nbsp {{ get_cart_sub_total }}</td>
                   </tr>
                   
                   {% endfor %}
@@ -283,7 +283,8 @@
                 </tbody>
               </table>
 
-              <form action="hjhj">
+              <form >
+               
                 {% for m in method %}
                 <div class="border p-3 mb-3">
                   <input type="radio" name="payment" id="{{m.id}}">
@@ -292,8 +293,7 @@
                 {% endfor %}
 
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary btn-lg py-3 btn-block" id="place-order">Place
-                    Order</button>
+                  <button type="submit" class="btn btn-primary btn-lg py-3 btn-block" id="place-order">Place Order</button>
                 </div>
               </form>
             </div>
@@ -312,7 +312,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   var options = {
-    "key": eCommerce.settings.API_KEY, // Enter the Key ID generated from the Dashboard
+    // "key": eCommerce.settings.API_KEY, // Enter the Key ID generated from the Dashboard  
     "amount": "{{cart.get_grand_total}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     "currency": "INR",
     "name": "Wear iN",
@@ -372,6 +372,7 @@
 
   document.getElementById('place-order').onclick = function (e) {
     e.preventDefault();
+    console.log('e.preventDefault')
     try {
       var method = document.querySelector('input[name="payment"]:checked').getAttribute('id')
     }
@@ -390,7 +391,8 @@
         alert('should select address')
         return;
       }
-      window.location.href = `{window.location.origin}/order/success/?method=${1}&addrs=${address}`
+      console.log('fawas')
+      window.location.href = `${window.location.origin}/order/success/?method=${1}&addrs=${address}`
     }
     else if (method == 2) {
       var address = get_address()
@@ -403,5 +405,7 @@
     }
   }
 
+
+  console.log('from checkout')
 </script>
 {% endblock script %}
